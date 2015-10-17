@@ -170,4 +170,58 @@ public abstract class DatabaseStorageBase extends PermanentStorageProxy {
             }
         }
     }
+
+    protected void writeToFileHistorical(String data) {
+
+        Connection conn = null;
+
+        try {
+            // we need to be more resilient here, and only create if table doesn't exist.
+            conn = DriverManager.getConnection(dbUrl);
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        try {
+            // create table if it doesn't exist
+            Statement sta = conn.createStatement();
+            String payload = "CREATE TABLE PROPERTIES (Name VARCHAR(100), Type VARCHAR(20), Value VARCHAR(50))";
+            int count = sta.executeUpdate(payload);
+            sta.close();
+
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            // e.printStackTrace();
+        }
+
+        // split up that string
+        String[] splitData = data.split(lineSeperator);
+
+        // each row actually needs to be split again;
+        for (String line : splitData) {
+            String[] values = line.split(propertyDelimiter);
+            // values is currently the order of Type, Name, Value
+
+            // try to update. If update doens't work or updates no rows, we'll try and insert directly.
+            String payload = "UPDATE PROPERTIES SET TYPE='" + values[0] + "', VALUE='" + values[2] + "' WHERE NAME = '"
+                    + values[1] + "'";
+            Statement sta;
+            try {
+                sta = conn.createStatement();
+                int count = sta.executeUpdate(payload);
+
+                if (count == 0) {
+                    // Looks like this isn't currently in the database. We need to add it instead.
+                    payload = "INSERT INTO PROPERTIES VALUES ('" + values[1] + "', '" + values[0] + "', '" + values[2]
+                            + "')";
+                    Statement insert = conn.createStatement();
+                    count = insert.executeUpdate(payload);
+                }
+            } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
 }
