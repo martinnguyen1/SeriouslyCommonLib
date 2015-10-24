@@ -67,7 +67,7 @@ public class PropertyTest extends BaseWPITest {
         assertEquals("test2",propertyManager.permanentStore.getString("string"));
     }
 
-        @Test
+    @Test
     public void testSavingValuePersistent() {
         DoubleProperty dbl1 = propertyManager.createProperty("speed", 0.5);
         BooleanProperty bool1 = propertyManager.createProperty("isTrue", false);
@@ -116,6 +116,23 @@ public class PropertyTest extends BaseWPITest {
         assertEquals(4.8, propertyManager.permanentStore.getDouble("height").doubleValue(), 0.001);
         assertEquals(true,propertyManager.permanentStore.getBoolean("isAwesome").booleanValue());
         assertEquals("488",propertyManager.permanentStore.getString("team"));
+    }
+       
+    @Test
+    public void testHistoricSavingValue() {
+        
+        DoubleProperty dbl3 = propertyManager.createPersistentProperty("height", 4.8);
+        BooleanProperty bool3 = propertyManager.createPersistentProperty("isAwesome", true);
+        StringProperty str3 = propertyManager.createPersistentProperty("team", "488");
+                  
+        propertyManager.saveOutAllPropertiesHistorical();
+        
+        propertyManager.saveOutAllPropertiesHistorical();
+        
+        assertEquals(4.8, propertyManager.permanentStore.getDouble("height").doubleValue(), 0.001);
+        assertEquals(true,propertyManager.permanentStore.getBoolean("isAwesome").booleanValue());
+        assertEquals("488",propertyManager.permanentStore.getString("team"));
+            
     }
     
     @Test

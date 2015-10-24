@@ -8,6 +8,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.apache.log4j.Logger;
+
+import com.google.inject.Inject;
+
 import java.util.Date;
 
 /**
@@ -27,7 +30,7 @@ public abstract class DatabaseStorageBase implements ITableProxy {
     private Connection conn;
 
     public DatabaseStorageBase(String databaseDirectory) {
-        
+
         dbUrl = String.format(dbUrlPreFormat, databaseDirectory);
         
         try {
@@ -218,11 +221,9 @@ public abstract class DatabaseStorageBase implements ITableProxy {
 
     }
 
+    
+    protected void saveHistoricalDatabase() {
 
-    protected void saveHistorical(String data) {
-
-        Connection conn = null;
-        propertyManager.saveOutAllProperties();
         try {
             // we need to be more resilient here, and only create if table doesn't exist.
             conn = DriverManager.getConnection(dbUrl);
@@ -239,30 +240,28 @@ public abstract class DatabaseStorageBase implements ITableProxy {
             sta.close();
 
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            // e.printStackTrace();
+            e.printStackTrace();
         }
         
         try {
             // create table if it doesn't exist
             Statement sta = conn.createStatement();
-            String payloadvs = "SELECT distinct(version) FROM PROPERTIES_HISTORIC ORDER BY Version DESC LIMIT 1";
+            String payloadvs = "SELECT distinct(version) FROM PROPERTIES_HISTORIC ORDER BY Version DESC FETCH FIRST 1 ROWS ONLY";
             ResultSet rsvs = sta.executeQuery(payloadvs);
-            int version;
-            if (rsvs.getFetchSize() == 1) {
+            int version = 1;
+            while (rsvs.next()) {
                 version = rsvs.getInt("Version") + 1;
-            }
-            else{
-                version = 1;
             }
             String payload = "SELECT * FROM PROPERTIES";
             ResultSet rs = sta.executeQuery(payload);
+            
             Date date = new Date();
+            java.sql.Date sqlDate = new java.sql.Date(date.getTime());
             while (rs.next()) {
                 String name = rs.getString("Name");
                 String type = rs.getString("Type");
                 String value = rs.getString("Value");
-                payload = "INSERT INTO PROPERTIES VALUES (" + date + ", " + version + ", '" + name + "', '" + type + "', '" + value
+                payload = "INSERT INTO PROPERTIES_HISTORIC VALUES ('" + sqlDate + "', " + version + ", '" + name + "', '" + type + "', '" + value
                         + "')";
                 Statement insert = conn.createStatement();
                 int count = insert.executeUpdate(payload);
@@ -271,9 +270,9 @@ public abstract class DatabaseStorageBase implements ITableProxy {
 
         } catch (SQLException e) {
             // TODO Auto-generated catch block
-            // e.printStackTrace();
+             e.printStackTrace();
         }
 
         
     }
-
+}

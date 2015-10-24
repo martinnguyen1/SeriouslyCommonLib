@@ -98,6 +98,14 @@ public class PropertyManager {
     }
     
     /**
+     * Save all properties into permanent storage.
+     */
+    public void saveOutAllPropertiesHistorical() {
+        saveOutAllProperties();
+        permanentStore.saveHistoricalDatabase();
+    }
+    
+    /**
      * @deprecated You should use createProperty(String key, Boolean defaultValue, PropertyPersistenceType persistenceType) 
      * instead, which includes persistenceType to determine if the property is persistent
      * 
