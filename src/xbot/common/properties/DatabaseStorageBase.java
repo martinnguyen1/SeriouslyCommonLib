@@ -19,14 +19,11 @@ public abstract class DatabaseStorageBase extends PermanentStorageProxy {
     private static Logger log = Logger.getLogger(DatabaseStorageBase.class);
 
     private String dbUrlPreFormat = "jdbc:derby:%1s;create=true";
-<<<<<<< HEAD
-    private String dbUrl = "";
     
     protected PropertyManager propertyManager;
-=======
+   
     private final String dbUrl;
->>>>>>> master
-
+    
     public DatabaseStorageBase(String databaseDirectory) {
         super();
 
@@ -177,7 +174,7 @@ public abstract class DatabaseStorageBase extends PermanentStorageProxy {
         }
     }
 
-    protected void writeToFileHistorical(String data) {
+    protected void saveHistorical(String data) {
 
         Connection conn = null;
         propertyManager.saveOutAllProperties();

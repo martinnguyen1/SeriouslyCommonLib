@@ -66,27 +66,6 @@ public class PropertyTest extends BaseWPITest {
         assertEquals(false,propertyManager.permanentStore.getBoolean("isTrue").booleanValue());
         assertEquals("test2",propertyManager.permanentStore.getString("string"));
     }
-    
-     @Test
-    public void testHistoricSavingValue() {
-        DoubleProperty dbl = propertyManager.createProperty("speed", 0.5);
-        BooleanProperty bool = propertyManager.createProperty("isTrue", false);
-        StringProperty str = propertyManager.createProperty("string", "test2");
-        
-        assertSame(null, propertyManager.permanentStore.getDouble("speed"));
-        assertSame(null, propertyManager.permanentStore.getBoolean("isTrue"));
-        assertSame(null, propertyManager.permanentStore.getString("string"));
-        
-        assertEquals(0.5, dbl.get(), 0.001);
-        assertEquals(false,bool.get());
-        assertEquals("test2",str.get());
-        
-        propertyManager.saveOutAllProperties();
-        
-        assertEquals(0.5, propertyManager.permanentStore.getDouble("speed").doubleValue(), 0.001);
-        assertEquals(false,propertyManager.permanentStore.getBoolean("isTrue").booleanValue());
-        assertEquals("test2",propertyManager.permanentStore.getString("string"));
-    }
 
         @Test
     public void testSavingValuePersistent() {
@@ -109,11 +88,11 @@ public class PropertyTest extends BaseWPITest {
         assertSame(null, propertyManager.permanentStore.getDouble("weight"));
         assertSame(null, propertyManager.permanentStore.getBoolean("isFalse"));
         assertSame(null, propertyManager.permanentStore.getString("robotname"));
-        
+       
         assertSame(null, propertyManager.permanentStore.getDouble("height"));
         assertSame(null, propertyManager.permanentStore.getBoolean("isAwesome"));
         assertSame(null, propertyManager.permanentStore.getString("team"));
-        
+       
         assertEquals(0.5, dbl1.get(), 0.001);
         assertEquals(false,bool1.get());
         assertEquals("test2",str1.get());
