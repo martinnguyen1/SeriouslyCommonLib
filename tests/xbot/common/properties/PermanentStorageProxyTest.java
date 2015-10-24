@@ -26,11 +26,11 @@ public class PermanentStorageProxyTest extends BaseWPITest {
     @Test
     public void testSaveAndLoad() {
     	
-    	PermanentStorageProxy p = propertyManager.permanentStore;
-        
-        p.writeToFile("double,fancyname,1.23\nboolean,flag,true\nstring,phrase,What time is it?");
-        
-        p.loadFromDisk();
+    	DatabaseStorageBase p = propertyManager.permanentStore;
+    	
+    	p.setDouble("fancyname", 1.23);
+    	p.setBoolean("flag", true);
+    	p.setString("phrase", "What time is it?");
         
         assertEquals(1.23, p.getDouble("fancyname"), 0.1);
         assertEquals(true, p.getBoolean("flag"));
@@ -77,10 +77,11 @@ public class PermanentStorageProxyTest extends BaseWPITest {
     }
     
     public void testClear() {
-    	PermanentStorageProxy p = propertyManager.permanentStore;
-        p.writeToFile("double,fancyname,1.23\nboolean,flag,true\nstring,phrase,What time is it?");
+        DatabaseStorageBase p = propertyManager.permanentStore;
         
-        p.loadFromDisk();
+        p.setDouble("fancyname", 1.23);
+        p.setBoolean("flag", true);
+        p.setString("phrase", "What time is it?");
         // need to verify that information was loaded
         assertEquals(p.getDouble("fancyname"), 1.23, .01);
         
