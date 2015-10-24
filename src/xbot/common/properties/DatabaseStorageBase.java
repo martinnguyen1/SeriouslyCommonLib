@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.apache.log4j.Logger;
+import java.util.Date;
 
 /**
  *
@@ -19,6 +20,8 @@ public abstract class DatabaseStorageBase extends PermanentStorageProxy {
 
     private String dbUrlPreFormat = "jdbc:derby:%1s;create=true";
     private String dbUrl = "";
+    
+    protected PropertyManager propertyManager;
 
     public DatabaseStorageBase(String databaseDirectory) {
         super();
@@ -174,7 +177,7 @@ public abstract class DatabaseStorageBase extends PermanentStorageProxy {
     protected void writeToFileHistorical(String data) {
 
         Connection conn = null;
-
+        propertyManager.saveOutAllProperties();
         try {
             // we need to be more resilient here, and only create if table doesn't exist.
             conn = DriverManager.getConnection(dbUrl);
@@ -186,7 +189,7 @@ public abstract class DatabaseStorageBase extends PermanentStorageProxy {
         try {
             // create table if it doesn't exist
             Statement sta = conn.createStatement();
-            String payload = "CREATE TABLE PROPERTIES (Name VARCHAR(100), Type VARCHAR(20), Value VARCHAR(50))";
+            String payload = "CREATE TABLE PROPERTIES_HISTORIC (Date DATE, Version INT, Name VARCHAR(100), Type VARCHAR(20), Value VARCHAR(50))";
             int count = sta.executeUpdate(payload);
             sta.close();
 
@@ -194,34 +197,38 @@ public abstract class DatabaseStorageBase extends PermanentStorageProxy {
             // TODO Auto-generated catch block
             // e.printStackTrace();
         }
-
-        // split up that string
-        String[] splitData = data.split(lineSeperator);
-
-        // each row actually needs to be split again;
-        for (String line : splitData) {
-            String[] values = line.split(propertyDelimiter);
-            // values is currently the order of Type, Name, Value
-
-            // try to update. If update doens't work or updates no rows, we'll try and insert directly.
-            String payload = "UPDATE PROPERTIES SET TYPE='" + values[0] + "', VALUE='" + values[2] + "' WHERE NAME = '"
-                    + values[1] + "'";
-            Statement sta;
-            try {
-                sta = conn.createStatement();
-                int count = sta.executeUpdate(payload);
-
-                if (count == 0) {
-                    // Looks like this isn't currently in the database. We need to add it instead.
-                    payload = "INSERT INTO PROPERTIES VALUES ('" + values[1] + "', '" + values[0] + "', '" + values[2]
-                            + "')";
-                    Statement insert = conn.createStatement();
-                    count = insert.executeUpdate(payload);
-                }
-            } catch (SQLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+        
+        try {
+            // create table if it doesn't exist
+            Statement sta = conn.createStatement();
+            String payloadvs = "SELECT distinct(version) FROM PROPERTIES_HISTORIC ORDER BY Version DESC LIMIT 1";
+            ResultSet rsvs = sta.executeQuery(payloadvs);
+            int version;
+            if (rsvs.getFetchSize() == 1) {
+                version = rsvs.getInt("Version") + 1;
             }
+            else{
+                version = 1;
+            }
+            String payload = "SELECT * FROM PROPERTIES";
+            ResultSet rs = sta.executeQuery(payload);
+            Date date = new Date();
+            while (rs.next()) {
+                String name = rs.getString("Name");
+                String type = rs.getString("Type");
+                String value = rs.getString("Value");
+                payload = "INSERT INTO PROPERTIES VALUES (" + date + ", " + version + ", '" + name + "', '" + type + "', '" + value
+                        + "')";
+                Statement insert = conn.createStatement();
+                int count = insert.executeUpdate(payload);
+            }
+            sta.close();
+
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            // e.printStackTrace();
         }
+
+        
     }
 }

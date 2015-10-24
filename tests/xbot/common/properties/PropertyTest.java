@@ -67,6 +67,27 @@ public class PropertyTest extends BaseWPITest {
     }
     
     @Test
+    public void testHistoricSavingValue() {
+        DoubleProperty dbl = propertyManager.createProperty("speed", 0.5);
+        BooleanProperty bool = propertyManager.createProperty("isTrue", false);
+        StringProperty str = propertyManager.createProperty("string", "test2");
+        
+        assertSame(null, propertyManager.permanentStore.getDouble("speed"));
+        assertSame(null, propertyManager.permanentStore.getBoolean("isTrue"));
+        assertSame(null, propertyManager.permanentStore.getString("string"));
+        
+        assertEquals(0.5, dbl.get(), 0.001);
+        assertEquals(false,bool.get());
+        assertEquals("test2",str.get());
+        
+        propertyManager.saveOutAllProperties();
+        
+        assertEquals(0.5, propertyManager.permanentStore.getDouble("speed").doubleValue(), 0.001);
+        assertEquals(false,propertyManager.permanentStore.getBoolean("isTrue").booleanValue());
+        assertEquals("test2",propertyManager.permanentStore.getString("string"));
+    }
+    
+    @Test
     public void testSortingValues() {
         PermanentStorageProxy permanentStore = propertyManager.permanentStore;
         permanentStore.setDouble("A", 0);
