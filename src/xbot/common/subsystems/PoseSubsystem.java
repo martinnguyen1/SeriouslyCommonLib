@@ -14,7 +14,7 @@ public class PoseSubsystem {
     
     private WPIFactory deviceFactory;
     
-    private XGyro gyro;
+    public XGyro gyro;
     private double gyroYawOffset = 0;
     
     public double FORWARD_ANGLE = 90;
@@ -23,6 +23,8 @@ public class PoseSubsystem {
     public PoseSubsystem(WPIFactory deviceFactory)
     {
         this.deviceFactory = deviceFactory;
+        SetupSensors();
+        calibrate(FORWARD_ANGLE);
     }
     
     public void SetupSensors()
