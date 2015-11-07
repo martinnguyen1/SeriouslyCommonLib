@@ -106,6 +106,13 @@ public class PropertyManager {
     }
     
     /**
+     * Load all properties versions.
+     */
+    public String loadPropertiesHistoricalVersions() {
+        return permanentStore.loadHistoricalVersions();
+    }
+    
+    /**
      * @deprecated You should use createProperty(String key, Boolean defaultValue, PropertyPersistenceType persistenceType) 
      * instead, which includes persistenceType to determine if the property is persistent
      * 

@@ -127,11 +127,43 @@ public class PropertyTest extends BaseWPITest {
                   
         propertyManager.saveOutAllPropertiesHistorical();
         
+        dbl3.set(10.7);
+        bool3.set(true);
+        str3.set("Totally");
+        
         propertyManager.saveOutAllPropertiesHistorical();
         
-        assertEquals(5.10, propertyManager.permanentStore.getDouble("speed").doubleValue(), 0.001);
-        assertEquals(false,propertyManager.permanentStore.getBoolean("isNew").booleanValue());
-        assertEquals("Whatever",propertyManager.permanentStore.getString("stuff"));
+        assertEquals(10.7, propertyManager.permanentStore.getDouble("speed").doubleValue(), 0.001);
+        assertEquals(true,propertyManager.permanentStore.getBoolean("isNew").booleanValue());
+        assertEquals("Totally",propertyManager.permanentStore.getString("stuff"));
+            
+    }
+    
+    @Test
+    public void testLoadHistoricVersions() {
+        
+        String propertystringnoproperties = propertyManager.loadPropertiesHistoricalVersions();
+        assertEquals("There are no historic properties to show",propertystringnoproperties);
+        
+        DoubleProperty dbl3 = propertyManager.createPersistentProperty("speed", 5.10);
+        BooleanProperty bool3 = propertyManager.createPersistentProperty("isNew", false);
+        StringProperty str3 = propertyManager.createPersistentProperty("stuff", "Whatever");
+                  
+        propertyManager.saveOutAllPropertiesHistorical();
+        
+        dbl3.set(10.7);
+        bool3.set(true);
+        str3.set("Totally");
+        
+        propertyManager.saveOutAllPropertiesHistorical();
+        
+        assertEquals(10.7, propertyManager.permanentStore.getDouble("speed").doubleValue(), 0.001);
+        assertEquals(true,propertyManager.permanentStore.getBoolean("isNew").booleanValue());
+        assertEquals("Totally",propertyManager.permanentStore.getString("stuff"));
+        
+        String propertystring = propertyManager.loadPropertiesHistoricalVersions();
+        
+        assertEquals("Totally",propertystring);
             
     }
     

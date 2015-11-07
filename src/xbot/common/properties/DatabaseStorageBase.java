@@ -127,7 +127,7 @@ public abstract class DatabaseStorageBase implements ITableProxy {
                 // Looks like this isn't currently in the database. We need to add it instead.
                 PreparedStatement insert = conn.prepareStatement("INSERT INTO PROPERTIES VALUES (?, ?, ?)");
                 insert.setString(1, name);
-                insert.setString(2, value);
+                insert.setString(2, type);
                 insert.setString(3, value);
                 
                 count = insert.executeUpdate();
@@ -210,12 +210,16 @@ public abstract class DatabaseStorageBase implements ITableProxy {
             if (propertiesTableExists()) {
                 Statement sta = conn.createStatement();
                 String payload = "DROP TABLE PROPERTIES";
+                String payload2 = "DROP TABLE PROPERTIES_HISTORIC";
 
                 int response = sta.executeUpdate(payload);
+                int response2 = sta.executeUpdate(payload2);
 
-                if (response == 0) {
+                if (response == 0 && response2 == 0) {
                     return true;
                 }
+                
+                
                 // something went wrong
                 return false;
             } else {
@@ -245,7 +249,7 @@ public abstract class DatabaseStorageBase implements ITableProxy {
         try {
             // create table if it doesn't exist
             Statement sta = conn.createStatement();
-            String payload = "CREATE TABLE PROPERTIES_HISTORIC (Date DATE, Version INT, Name VARCHAR(100), Type VARCHAR(20), Value VARCHAR(50))";
+            String payload = "CREATE TABLE PROPERTIES_HISTORIC (Date DATE, Time TIME, Version INT, Name VARCHAR(100), Type VARCHAR(20), Value VARCHAR(50))";
             int count = sta.executeUpdate(payload);
             sta.close();
 
@@ -267,14 +271,19 @@ public abstract class DatabaseStorageBase implements ITableProxy {
             
             Date date = new Date();
             java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+            java.sql.Time sqlTime = new java.sql.Time(date.getTime());
             while (rs.next()) {
                 String name = rs.getString("Name");
                 String type = rs.getString("Type");
                 String value = rs.getString("Value");
-                payload = "INSERT INTO PROPERTIES_HISTORIC VALUES ('" + sqlDate + "', " + version + ", '" + name + "', '" + type + "', '" + value
-                        + "')";
-                Statement insert = conn.createStatement();
-                int count = insert.executeUpdate(payload);
+                PreparedStatement insert = conn.prepareStatement("INSERT INTO PROPERTIES_HISTORIC VALUES (?, ?, ?, ?, ?, ?)");
+                insert.setDate(1, sqlDate);
+                insert.setTime(2, sqlTime);
+                insert.setInt(3, version);
+                insert.setString(4, name);
+                insert.setString(5, type);
+                insert.setString(6, value);
+                int count = insert.executeUpdate();
             }
             sta.close();
 
@@ -284,5 +293,41 @@ public abstract class DatabaseStorageBase implements ITableProxy {
         }
 
         
+    }
+    
+    protected String loadHistoricalVersions() {
+        int tablenum = 0;
+        String versionString = "";
+        DatabaseMetaData metadata = null;
+        try {
+            metadata = conn.getMetaData();
+            ResultSet result = metadata.getTables(null, null, "PROPERTIES_HISTORIC", null);
+            tablenum = result.getFetchSize();            
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return versionString = "There are no historic properties to show";
+        }
+        try{
+            if (tablenum == 1) {
+                Statement sta = conn.createStatement();
+                String payloadvs = "SELECT distinct Version, Date, Time FROM PROPERTIES_HISTORIC ORDER BY Version DESC FETCH FIRST 10 ROWS ONLY";
+                ResultSet rs = sta.executeQuery(payloadvs);
+                while (rs.next()) {
+                    String version = rs.getString("Version");
+                    String date = rs.getString("Date");
+                    String time = rs.getString("Time");
+                    if (versionString == ""){
+                        versionString = version + "#" + date + " " + time;
+                    }else{
+                        versionString += ";" + version + "#" + date + " " + time;
+                    }
+                }
+                return versionString;
+            }
+            return versionString = "There are no historic properties to show"; 
+        } catch (SQLException e){
+            e.printStackTrace();
+            return versionString = "There are no historic properties to show";
+        }
     }
 }
