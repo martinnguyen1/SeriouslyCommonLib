@@ -17,8 +17,6 @@ import com.google.inject.Singleton;
 public class RotationalSubsystem extends BaseSubsystem
 {
     private static Logger log = Logger.getLogger(DriveSubsystem.class);
-
-    private double gyroYawOffset = 0;
     
     private DriveSubsystem drive;
     private PoseSubsystem pose;
