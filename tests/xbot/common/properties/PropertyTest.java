@@ -121,17 +121,17 @@ public class PropertyTest extends BaseWPITest {
     @Test
     public void testHistoricSavingValue() {
         
-        DoubleProperty dbl3 = propertyManager.createPersistentProperty("height", 4.8);
-        BooleanProperty bool3 = propertyManager.createPersistentProperty("isAwesome", true);
-        StringProperty str3 = propertyManager.createPersistentProperty("team", "488");
+        DoubleProperty dbl3 = propertyManager.createPersistentProperty("speed", 5.10);
+        BooleanProperty bool3 = propertyManager.createPersistentProperty("isNew", false);
+        StringProperty str3 = propertyManager.createPersistentProperty("stuff", "Whatever");
                   
         propertyManager.saveOutAllPropertiesHistorical();
         
         propertyManager.saveOutAllPropertiesHistorical();
         
-        assertEquals(4.8, propertyManager.permanentStore.getDouble("height").doubleValue(), 0.001);
-        assertEquals(true,propertyManager.permanentStore.getBoolean("isAwesome").booleanValue());
-        assertEquals("488",propertyManager.permanentStore.getString("team"));
+        assertEquals(5.10, propertyManager.permanentStore.getDouble("speed").doubleValue(), 0.001);
+        assertEquals(false,propertyManager.permanentStore.getBoolean("isNew").booleanValue());
+        assertEquals("Whatever",propertyManager.permanentStore.getString("stuff"));
             
     }
     
