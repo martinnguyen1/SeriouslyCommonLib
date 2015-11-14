@@ -2,6 +2,7 @@ package xbot.common.subsystems;
 
 import org.apache.log4j.Logger;
 
+import xbot.common.controls.sensors.XEncoder;
 import xbot.common.controls.sensors.XGyro;
 import xbot.common.injection.wpi_factories.WPIFactory;
 import xbot.common.math.ContiguousDouble;
@@ -13,12 +14,31 @@ public class PoseSubsystem {
 
     private static Logger log = Logger.getLogger(PoseSubsystem.class);
     
-    private WPIFactory deviceFactory;
+    protected WPIFactory deviceFactory;
     
     public XGyro gyro;
-    private double gyroYawOffset = 0;
+    public XEncoder leftLongitudinalEncoder;
+    public XEncoder rightLongitudinalEncoder;
+    public XEncoder middleTransverseEncoder;
     
-    public double FORWARD_ANGLE = 90;
+    
+    protected double robotXPosition;
+    protected double robotYPosition;
+    
+    protected double robotXVelocity;
+    protected double robotYVelocity;
+    
+    protected double robotTransverseTilt;
+    protected double robotLongitundinalTilt;
+    
+    
+    private double previousTotalLongitudinalDistanceX_Left;
+    private double previousTotalLongitudinalDistanceX_Right;
+    private double previousTotalLongitudinalDistanceY;
+    
+    
+    protected double gyroYawOffset = 0;
+    protected double FORWARD_ANGLE = 90;
     
     @Inject
     public PoseSubsystem(WPIFactory deviceFactory)
@@ -31,6 +51,23 @@ public class PoseSubsystem {
     public void setupSensors()
     {
         gyro = deviceFactory.getGyro();
+    }
+    
+    /**
+     * Updates all base sensor data related to robot pose. This method needs to be called frequently 
+     * and ideally periodically.
+     * 
+     * It needs to set the following protected variables:
+     *     robotXPosition
+     *     robotYPosition
+     *     robotXVelocity
+     *     robotYVelocity
+     *     robotTransverseTilt
+     *     robotLongitundinalTilt
+     */
+    public void updateSensorValues()
+    {
+        
     }
     
     public ContiguousDouble getUncalibratedGyroYaw()
