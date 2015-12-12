@@ -131,7 +131,7 @@ public class DriveTests extends BaseWPITest{
         checkMotorPowers(-1, -1, 1, -1);
     }
     
-    private void checkMotorPowers(double frontL, double frontR, double rearL, double rearR){
+    protected void checkMotorPowers(double frontL, double frontR, double rearL, double rearR){
         assertEquals(frontL, ((MockSpeedController)drive.leftFrontDrive).get(), 0.001);
         assertEquals(frontR, ((MockSpeedController)drive.rightFrontDrive).get(), 0.001);
         assertEquals(rearL, ((MockSpeedController)drive.leftRearDrive).get(), 0.001);

@@ -98,7 +98,7 @@ public class TranslationalSubsystem extends BaseSubsystem
         if (Math.abs(tilt.x) > 60
                 || Math.abs(tilt.y) > 60)
         {
-            // We are tilting a huge amount. Time to give up, so we're not spinnign wheels while knocked over.
+            // We are tilting a huge amount. Time to give up, so we're not spinning wheels while knocked over.
             return;
         }
         
@@ -235,9 +235,11 @@ public class TranslationalSubsystem extends BaseSubsystem
 
     public boolean isAtPositionTarget(double posTolerance, double velTolerance)
     {
-        return xPositionPID.isOnTarget(posTolerance)
-                && yPositionPID.isOnTarget(posTolerance)
-                && pose.isStopped(velTolerance);
+        boolean xTarget = xPositionPID.isOnTarget(posTolerance);
+        boolean yTarget = yPositionPID.isOnTarget(posTolerance);
+        boolean stopped = pose.isStopped(velTolerance);
+        
+        return xTarget && yTarget && stopped;
     }
 
     public void zeroPower()

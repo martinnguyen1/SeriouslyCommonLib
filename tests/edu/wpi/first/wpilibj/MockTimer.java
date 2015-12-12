@@ -62,7 +62,7 @@ public class MockTimer implements Timer.StaticInterface {
 	    }
 
 	    private long getMsClock() {
-	    	return (long)(mockTimer.getFPGATimestamp() / 1000);
+	    	return (long)(mockTimer.getFPGATimestamp() * 1000);
 	    }
 
 	    /**

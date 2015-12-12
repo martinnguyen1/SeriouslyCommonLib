@@ -9,7 +9,9 @@ import xbot.common.math.ContiguousDouble;
 import xbot.common.math.XYPair;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class PoseSubsystem {
 
     private static Logger log = Logger.getLogger(PoseSubsystem.class);
