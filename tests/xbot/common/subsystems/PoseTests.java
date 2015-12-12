@@ -5,9 +5,7 @@ import org.junit.Test;
 
 import edu.wpi.first.wpilibj.MockEncoder;
 import static org.junit.Assert.assertEquals;
-import xbot.common.controls.sensors.MockGyro;
 import xbot.common.injection.BaseWPITest;
-import xbot.common.math.XYPair;
 
 public class PoseTests extends BaseWPITest {
     
@@ -112,7 +110,20 @@ public class PoseTests extends BaseWPITest {
         checkFieldSpeeds(10, 0);
     }
     
-
+    @Test
+    public void checkStopped(){
+        setSpeeds(10, 10, 0);
+        assertEquals(false, pose.isStopped(5));
+        assertEquals(false, pose.isStopped(10));
+        assertEquals(true, pose.isStopped(11));
+        
+        setSpeeds(-10, -10, 0);
+        assertEquals(false, pose.isStopped(5));
+        assertEquals(false, pose.isStopped(10));
+        assertEquals(true, pose.isStopped(11));
+    }
+    
+    
     private void setDistances(double left, double right, double middle)
     {
         ((MockEncoder)pose.leftLongitudinalEncoder).setDistance(left);

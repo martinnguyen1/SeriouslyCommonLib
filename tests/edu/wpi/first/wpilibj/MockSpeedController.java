@@ -25,6 +25,12 @@ public class MockSpeedController implements XSpeedController {
 
 	@Override
 	public void set(double output) {
+	    
+	    // should also mimic the coercion
+	    
+	    output = output > 1 ? 1 : output;
+	    output = output < -1 ? -1 : output;
+	    
 		mockRobotIO.setPWM(channel, output);
 	}
 
