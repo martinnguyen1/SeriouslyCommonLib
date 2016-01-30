@@ -62,5 +62,10 @@ public class AnalogDistanceSensor implements DistanceSensor {
                     - (38.528 * voltage)
                     + 15.848;
         }
+        
+        public static final double placeholder(double voltage)
+        {
+            return 10*voltage;
+        }
     }
 }
