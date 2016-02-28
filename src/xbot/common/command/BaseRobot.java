@@ -4,7 +4,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
 import xbot.common.injection.RobotModule;
-import xbot.common.properties.PropertyManager;
+import xbot.common.properties.XPropertyManager;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -24,13 +24,15 @@ public class BaseRobot extends IterativeRobot {
 
     static Logger log = Logger.getLogger(BaseRobot.class);
 
-    protected PropertyManager propertyManager;
+    protected XPropertyManager propertyManager;
     protected XScheduler xScheduler;
 
     protected AbstractModule injectionModule;
 
     // Other than initially creating required systems, you should never use the injector again
     protected Injector injector;
+    
+    protected BaseCommand autonomousCommand;
 
     public BaseRobot() {
         super();
@@ -63,7 +65,7 @@ public class BaseRobot extends IterativeRobot {
         // override with additional systems (but call this one too)
 
         // Get the property manager and get all properties from the robot disk
-        propertyManager = this.injector.getInstance(PropertyManager.class);
+        propertyManager = this.injector.getInstance(XPropertyManager.class);
         xScheduler = this.injector.getInstance(XScheduler.class);
     }
 
@@ -79,6 +81,12 @@ public class BaseRobot extends IterativeRobot {
 
     public void autonomousInit() {
         log.info("Autonomous init");
+        if(this.autonomousCommand != null) {
+            log.info("Starting command: " + this.autonomousCommand);
+            this.autonomousCommand.start();
+        } else {
+            log.warn("No autonomousCommand set.");
+        }
     }
 
     /**
@@ -90,6 +98,10 @@ public class BaseRobot extends IterativeRobot {
 
     public void teleopInit() {
         log.info("Teleop init");
+        if(this.autonomousCommand != null) {
+            log.info("Cancelling autonomousCommand.");
+            this.autonomousCommand.cancel();
+        }
     }
 
     /**
