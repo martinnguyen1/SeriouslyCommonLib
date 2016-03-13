@@ -6,6 +6,8 @@
 
 package xbot.common.properties;
 
+import xbot.common.properties.Property.PropertyPersistenceType;
+
 /**
  * A type of Property that manages a String value.
  * @author Sterling
@@ -22,7 +24,16 @@ public class StringProperty extends Property {
     public StringProperty(String name, String defaultValue, PropertyPersistenceType persistenceType, XPropertyManager manager) {
         super(name, manager, persistenceType);
         this.defaultValue = defaultValue;
-        load();
+        loadIfPersistent();
+    }    
+    
+    private void loadIfPersistent() {
+        if (persistenceType == PropertyPersistenceType.Persistent) {
+            load();
+        }
+        else {
+            set(defaultValue);
+        }
     }
     
     public String get() {

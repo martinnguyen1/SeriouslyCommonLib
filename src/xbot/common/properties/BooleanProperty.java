@@ -6,6 +6,7 @@
 
 package xbot.common.properties;
 
+import xbot.common.properties.Property.PropertyPersistenceType;
 
 /**
  * A property holding a boolean value.
@@ -31,7 +32,16 @@ public class BooleanProperty extends Property {
             XPropertyManager manager) {
         super(name, manager, persistenceType);
         this.defaultValue = defaultValue;
-        load();
+        loadIfPersistent();
+    }    
+    
+    private void loadIfPersistent() {
+        if (persistenceType == PropertyPersistenceType.Persistent) {
+            load();
+        }
+        else {
+            set(defaultValue);
+        }
     }
 
     /**

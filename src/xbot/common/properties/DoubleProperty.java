@@ -20,9 +20,17 @@ public class DoubleProperty extends Property {
     public DoubleProperty(String name, double defaultValue, PropertyPersistenceType persistenceType, XPropertyManager manager) {
         super(name, manager, persistenceType);
         this.defaultValue = defaultValue;
-        load();
-    }
+        loadIfPersistent();
+    }    
     
+    private void loadIfPersistent() {
+        if (persistenceType == PropertyPersistenceType.Persistent) {
+            load();
+        }
+        else {
+            set(defaultValue);
+        }
+    }
 
     public double get() {
         return randomAccessStore.getDouble(key).doubleValue();
