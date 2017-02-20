@@ -2,7 +2,7 @@ package xbot.common.injection;
 
 import com.google.inject.assistedinject.Assisted;
 
-public interface ThirdPartyAdapterAbstractClassFactory {
+public interface PrimitiveFactory {
 
     public ThirdPartyAdapterAbstractClass create(
             @Assisted("index") int index);

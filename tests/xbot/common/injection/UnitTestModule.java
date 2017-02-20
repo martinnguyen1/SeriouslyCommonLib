@@ -51,11 +51,13 @@ public class UnitTestModule extends AbstractModule {
         this.bind(RobotAssertionManager.class).to(LoudRobotAssertionManager.class);
         
         this.bind(BasePoseSubsystem.class).to(TestPoseSubsystem.class);
-        this.bind(ThirdPartyAdapterAbstractClassFactory.class).toProvider(
-                FactoryProvider.newFactory(
-                        ThirdPartyAdapterAbstractClassFactory.class, 
-                        ThirdPartyFakeAdapter.class));
         
+        this.install(new FactoryModuleBuilder().implement(
+                ThirdPartyAdapterAbstractClass.class,
+                ThirdPartyFakeAdapter.class)
+                .build(PrimitiveFactory.class));
+        
+        this.install(new FactoryModuleBuilder().build(AdvancedFactory.class));
         this.install(new FactoryModuleBuilder().build(PIDFactory.class));
     }
     

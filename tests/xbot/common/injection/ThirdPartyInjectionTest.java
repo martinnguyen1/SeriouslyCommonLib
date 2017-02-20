@@ -8,11 +8,10 @@ public class ThirdPartyInjectionTest extends BaseWPITest {
 
     @Test
     public void getThirdParty() {
-        ThirdPartyAdapterAbstractClassFactory logic = 
-                injector.getInstance(ThirdPartyAdapterAbstractClassFactory.class);
+        AdvancedFactory advf = injector.getInstance(AdvancedFactory.class);
         
-        ThirdPartyAdapterAbstractClass tpaac = logic.create(5);
+        XbotLogicClass xlc = advf.createLogicClass(5);
         
-        assertTrue(tpaac.getIndex() == 5);
+        assertTrue(xlc.tpaac.getIndex() == 5);
     }
 }
