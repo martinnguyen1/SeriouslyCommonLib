@@ -17,6 +17,7 @@ import xbot.common.subsystems.pose.TestPoseSubsystem;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
+import com.google.inject.assistedinject.FactoryProvider;
 
 import edu.wpi.first.wpilibj.MockTimer;
 import edu.wpi.first.wpilibj.Timer;
@@ -50,7 +51,12 @@ public class UnitTestModule extends AbstractModule {
         this.bind(RobotAssertionManager.class).to(LoudRobotAssertionManager.class);
         
         this.bind(BasePoseSubsystem.class).to(TestPoseSubsystem.class);
+        this.bind(ThirdPartyAdapterAbstractClassFactory.class).toProvider(
+                FactoryProvider.newFactory(
+                        ThirdPartyAdapterAbstractClassFactory.class, 
+                        ThirdPartyFakeAdapter.class));
         
         this.install(new FactoryModuleBuilder().build(PIDFactory.class));
     }
+    
 }
