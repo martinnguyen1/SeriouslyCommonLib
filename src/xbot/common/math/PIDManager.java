@@ -16,6 +16,9 @@ public class PIDManager extends PIDPropertyManager {
 
     private DoubleProperty maxOutput;
     private DoubleProperty minOutput;
+    private Double overriddenMinOutput = null;
+    private Double overriddenMaxOutput = null;
+    
     private BooleanProperty isEnabled;
     private boolean isIMasked = false;
     
@@ -90,18 +93,30 @@ public class PIDManager extends PIDPropertyManager {
         this(functionName, propMan, assertionManager, 0, 0, 0);
     }
     
+    public void overrideOutputConstraints(Double min, Double max) {
+        overriddenMinOutput = min;
+        overriddenMaxOutput = max;
+    }
+    
     private void sendTolerancesToInternalPID() {
         pid.setTolerances(getErrorThreshold(), getDerivativeThreshold(), getTimeThreshold());
         pid.setShouldCheckTolerances(getEnableErrorThreshold(), getEnableDerivativeThreshold(), getEnableTimeThreshold());
     }
 
     public double calculate(double goal, double current) {
+        double pidResult = calculateUnconstrained(goal, current);
+        return MathUtils.constrainDouble(
+                pidResult,
+                overriddenMinOutput == null ? minOutput.get() : overriddenMinOutput.doubleValue(),
+                overriddenMaxOutput == null ? maxOutput.get() : overriddenMaxOutput.doubleValue());
+    }
+    
+    protected double calculateUnconstrained(double goal, double current) {
         // update tolerances via properties
         sendTolerancesToInternalPID();
         
         if(isEnabled.get()) {
-            double pidResult = pid.calculate(goal, current, getP(), isIMasked ? 0 : getI(), getD(), getF());
-            return MathUtils.constrainDouble(pidResult, minOutput.get(), maxOutput.get());
+            return pid.calculate(goal, current, getP(), isIMasked ? 0 : getI(), getD(), getF());
         } else {
             return 0;
         }
