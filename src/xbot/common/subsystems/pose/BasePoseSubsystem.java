@@ -10,6 +10,7 @@ import xbot.common.injection.wpi_factories.WPIFactory;
 import xbot.common.math.ContiguousDouble;
 import xbot.common.math.ContiguousHeading;
 import xbot.common.math.FieldPose;
+import xbot.common.math.Quaternion;
 import xbot.common.math.XYPair;
 import xbot.common.properties.BooleanProperty;
 import xbot.common.properties.DoubleProperty;
@@ -202,6 +203,10 @@ public abstract class BasePoseSubsystem extends BaseSubsystem implements Periodi
     
     public void getYawAngularVelocity(){
         imu.getYawAngularVelocity();
+    }
+    
+    public Quaternion getImuOrientationQuaternion() {
+        return imu.getOrientationQuaternion();
     }
     
     public boolean getNavXReady() {

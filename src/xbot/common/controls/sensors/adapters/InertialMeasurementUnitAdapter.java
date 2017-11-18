@@ -8,6 +8,7 @@ import xbot.common.controls.sensors.NavImu;
 import xbot.common.controls.sensors.XGyro;
 import xbot.common.controls.sensors.navx.AHRS;
 import xbot.common.math.ContiguousHeading;
+import xbot.common.math.Quaternion;
 
 public class InertialMeasurementUnitAdapter extends NavImu implements XGyro {
 
@@ -71,5 +72,10 @@ public class InertialMeasurementUnitAdapter extends NavImu implements XGyro {
      */
     public double getYawAngularVelocity(){
         return ahrs.getRate();
+    }
+
+    @Override
+    public Quaternion getOrientationQuaternion() {
+        return new Quaternion(ahrs.getQuaternionW(), ahrs.getQuaternionX(), ahrs.getQuaternionY(), ahrs.getQuaternionY());
     }
 }

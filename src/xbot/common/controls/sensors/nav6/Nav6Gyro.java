@@ -3,8 +3,8 @@ package xbot.common.controls.sensors.nav6;
 import edu.wpi.first.wpilibj.SerialPort;
 import xbot.common.controls.sensors.NavImu;
 import xbot.common.controls.sensors.XGyro;
-import xbot.common.controls.sensors.navx.AHRS;
 import xbot.common.math.ContiguousHeading;
+import xbot.common.math.Quaternion;
 
 /**
  * Internal class to handle gyro readings.
@@ -64,5 +64,10 @@ public class Nav6Gyro extends NavImu implements XGyro
     public double getYawAngularVelocity(){
         // This method is not supported for the Nav6 gyro.
         return 0;
+    }
+
+    @Override
+    public Quaternion getOrientationQuaternion() {
+        return new Quaternion();
     }
 }

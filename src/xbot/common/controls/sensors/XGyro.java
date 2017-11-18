@@ -1,6 +1,7 @@
 package xbot.common.controls.sensors;
 
 import xbot.common.math.ContiguousHeading;
+import xbot.common.math.Quaternion;
 
 public interface XGyro
 {
@@ -27,4 +28,6 @@ public interface XGyro
      * In degrees per second
      */
     public double getYawAngularVelocity();
+    
+    public Quaternion getOrientationQuaternion();
 }

@@ -2,6 +2,7 @@ package xbot.common.controls.sensors;
 
 import xbot.common.controls.MockRobotIO;
 import xbot.common.math.ContiguousHeading;
+import xbot.common.math.Quaternion;
 
 public class MockGyro implements XGyro {
     private boolean isBroken;
@@ -44,6 +45,11 @@ public class MockGyro implements XGyro {
     
     public double getYawAngularVelocity(){
         return mockIO.getGyroHeadingAngularVelocity();
+    }
+
+    @Override
+    public Quaternion getOrientationQuaternion() {
+        return new Quaternion();
     }
 
 }
