@@ -126,7 +126,7 @@ public class RealWPIFactory implements WPIFactory {
                 case nav6:
                     return new Nav6Gyro();
                 case navX:
-                    return new InertialMeasurementUnitAdapter(Port.kMXP);
+                    return new InertialMeasurementUnitAdapter();
                 default:
                     log.error("Could not find " + imuType.name() + "! Returning a \"broken\" MockGyro instead.");
                     return getBrokenGyro();

@@ -18,7 +18,7 @@ public class InertialMeasurementUnitAdapter extends NavImu implements XGyro {
         super(ImuType.navX);
         /* Options: Port.kMXP, SPI.kMXP, I2C.kMXP or SerialPort.kUSB */
         try {
-            this.ahrs = new AHRS(Port.kMXP);
+            this.ahrs = new AHRS(SPI.Port.kMXP);
         }
         catch (Exception e){
             isBroken = true;
