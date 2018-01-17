@@ -42,6 +42,7 @@ dependencies {
     // System libraries so our tests can run
     compile 'edu.wpi.first.ntcore:ntcore-jni:4.0.0:all'
     compile 'edu.wpi.first.wpilibj:wpilibj-jni:2018.1.1:all'
+    compile 'edu.wpi.first.wpilibj:wpilibj-jniShared:2018.1.1:all'
     
     // Third party - CTRE and NavX
     compile 'openrio.mirror.third.ctre:CTRE-phoenix-java:5.2.1.1'
